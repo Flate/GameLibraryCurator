@@ -2,6 +2,7 @@ plugins {
 	id 'org.springframework.boot' version '2.1.6.RELEASE'
 	id 'idea'
 	id 'java'
+	id 'maven'
 }
 
 apply plugin: 'io.spring.dependency-management'
@@ -56,4 +57,18 @@ task installAngular(type: Exec) {
 	} else {
 		commandLine "npm", "install"
 	}
+}
+
+
+task createPom {
+	pom {
+		//noinspection GroovyAssignabilityCheck
+		project {
+			groupId "eu.flate.glc"
+			artifactId 'GameLibraryCurator'
+			version '0.0.1-SNAPSHOT'
+
+			inceptionYear '2019'
+		}
+	}.writeTo("pom.xml")
 }
