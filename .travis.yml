@@ -8,7 +8,7 @@ before_install:
   - npm install -g @angular/cli
 
 script:
-  - ./gradlew ciTest --scan --no-build-cache -s
+  - ./gradlew ciTest --scan --no-daemon -s
 
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
