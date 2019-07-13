@@ -3,41 +3,76 @@ plugins {
 	id 'idea'
 	id 'java'
 	id 'maven'
+	id 'com.zyxist.chainsaw' version '0.3.1'
 }
 
 apply plugin: 'io.spring.dependency-management'
 
+
 group = 'eu.flate.glc'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
+
+def webappDir = "$projectDir/src/main/webapp"
+def webappOut = "$webappDir/dist"
+def webappSrc = "$webappDir/src"
+def webappModules = "$webappDir/node_modules"
+def webappFiles = files(file("$webappDir/angular.json"),
+		file("$webappDir/package.json"),
+		file("$webappDir/package-lock.json"),
+		file("$webappDir/tsconfig.app.json"),
+		file("$webappDir/tsconfig.json"),
+		file("$webappDir/tsconfig.spec.json"));
+
+def webappTestFile = file("$webappDir/karma.conf.js")
+
+javaModule.name = 'eu.flate.glc.GameLibraryCurator'
+javaModule.extraTestModules = ['spring.test', 'spring.boot.test']
+
+javaModule.hacks {
+	patches('hamcrest.library', 'hamcrest.core')
+	patches('android.json', 'jsonassert')
+}
 
 repositories {
 	mavenCentral()
 }
 
 dependencies {
+	patch 'org.hamcrest:hamcrest-library'
+	patch 'com.vaadin.external.google:android-json:0.0.20131108.vaadin1'
+
+	implementation 'org.hamcrest:hamcrest-core'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-devtools'
+	implementation 'com.lukaspradel:steam-web-api:1.2'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.junit.jupiter:junit-jupiter-api'
+	testImplementation 'org.junit.jupiter:junit-jupiter-engine'
 }
 
-def webappDir = "$projectDir/src/main/webapp"
+
 sourceSets {
 	main {
 		resources {
-			srcDirs = ["$webappDir/dist", "$projectDir/src/main/resources"]
+			srcDirs = ["$webappOut", "$projectDir/src/main/resources"]
 		}
 	}
 }
 
 processResources {
 	dependsOn "buildAngular"
+	dependsOn "createPom"
 }
+
 
 task buildAngular(type: Exec) {
 	// installAngular should be run prior to this task
 	dependsOn "installAngular"
 	workingDir "$webappDir"
-	inputs.dir "$webappDir"
+	inputs.dir "$webappSrc"
+	inputs.files "$webappFiles"
+	outputs.dir "$webappOut"
 	// Add task to the standard build group
 	group = BasePlugin.BUILD_GROUP
 	// ng doesn't exist as a file in windows -> ng.cmd
@@ -50,7 +85,8 @@ task buildAngular(type: Exec) {
 
 task installAngular(type: Exec) {
 	workingDir "$webappDir"
-	inputs.dir "$webappDir"
+	inputs.files "$webappFiles"
+	outputs.dir "$webappModules"
 	group = BasePlugin.BUILD_GROUP
 	if (System.getProperty("os.name").toUpperCase().contains("WINDOWS")) {
 		commandLine "npm.cmd", "install"
@@ -64,11 +100,72 @@ task createPom {
 	pom {
 		//noinspection GroovyAssignabilityCheck
 		project {
-			groupId "eu.flate.glc"
-			artifactId 'GameLibraryCurator'
-			version '0.0.1-SNAPSHOT'
+			groupId rootProject.group.toString()
+			artifactId rootProject.name
+			version rootProject.version.toString()
 
 			inceptionYear '2019'
 		}
 	}.writeTo("pom.xml")
+}
+
+test {
+	task ciTest {
+		dependsOn "karmaTestAngular"
+		dependsOn "e2eTestAngular"
+	}
+
+	task ciBuildAngular(type: Exec) {
+		dependsOn "ciInstallAngular"
+		workingDir "$webappDir"
+		inputs.dir "$webappSrc"
+		inputs.files "$webappFiles"
+		outputs.dir "$webappOut"
+		group = BasePlugin.BUILD_GROUP
+		if (System.getProperty("os.name").toUpperCase().contains("WINDOWS")) {
+			commandLine "ng.cmd", "build", "--prod"
+		} else {
+			commandLine "ng", "build", "--prod"
+		}
+	}
+
+	task ciInstallAngular(type: Exec) {
+		workingDir "$webappDir"
+		inputs.files "$webappFiles"
+		outputs.dir "$webappModules"
+		group = BasePlugin.BUILD_GROUP
+		if (System.getProperty("os.name").toUpperCase().contains("WINDOWS")) {
+			commandLine "npm.cmd", "ci", "-f"
+		} else {
+			commandLine "npm", "ci", "-f"
+		}
+	}
+
+	task karmaTestAngular(type: Exec) {
+		dependsOn "ciBuildAngular"
+		workingDir "$webappDir"
+		inputs.dir "$webappSrc"
+		inputs.file "$webappTestFile"
+		outputs.dir "$webappOut"
+		group = BasePlugin.BUILD_GROUP
+		if (System.getProperty("os.name").toUpperCase().contains("WINDOWS")) {
+			commandLine "ng.cmd", "test", "--progress=false", "--watch=false"
+		} else {
+			commandLine "ng", "test", "--progress=false", "--watch=false"
+		}
+	}
+
+	task e2eTestAngular(type: Exec) {
+		dependsOn "ciBuildAngular"
+		workingDir "$webappDir"
+		inputs.dir "$webappSrc"
+		inputs.dir "$webappDir/e2e"
+		outputs.dir "$webappOut"
+		group = BasePlugin.BUILD_GROUP
+		if (System.getProperty("os.name").toUpperCase().contains("WINDOWS")) {
+			commandLine "ng.cmd", "e2e"
+		} else {
+			commandLine "ng", "e2e"
+		}
+	}
 }
