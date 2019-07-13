@@ -142,9 +142,9 @@ test {
 		outputs.dir "$webappModules"
 		group = BasePlugin.BUILD_GROUP
 		if (System.getProperty("os.name").toUpperCase().contains("WINDOWS")) {
-			commandLine "npm.cmd", "ci", "-f"
+			commandLine "npm.cmd", "ci"
 		} else {
-			commandLine "npm", "ci", "-f"
+			commandLine "npm", "ci"
 		}
 	}
 
