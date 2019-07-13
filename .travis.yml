@@ -4,9 +4,11 @@ dist: xenial
 jdk: openjdk11
 install: true
 
+before_install:
+  - npm install -g @angular/cli
 
 script:
-  - ./gradlew ciTest --scan -s
+  - ./gradlew ciTest --scan --no-build-cache -s
 
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
