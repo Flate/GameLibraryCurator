@@ -27,7 +27,7 @@ def webappFiles = files(file("$webappDir/angular.json"),
 
 def webappTestFile = file("$webappDir/karma.conf.js")
 
-javaModule.name = 'eu.flate.glc.GameLibraryCurator'
+javaModule.name = 'eu.flate.GameLibraryCurator'
 javaModule.extraTestModules = ['spring.test', 'spring.boot.test']
 
 javaModule.hacks {

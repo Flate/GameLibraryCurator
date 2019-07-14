@@ -1,4 +1,4 @@
-package eu.flate.glc.GameLibraryCurator;
+package eu.flate.glc;
 
 import org.junit.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

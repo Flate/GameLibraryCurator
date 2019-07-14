@@ -4,6 +4,8 @@
 
 const { SpecReporter } = require('jasmine-spec-reporter');
 
+process.env.CHROME_BIN = process.env.CHROME_BIN || require('puppeteer').executablePath();
+
 /**
  * @type { import("protractor").Config }
  */
@@ -22,6 +24,11 @@ exports.config = {
     showColors: true,
     defaultTimeoutInterval: 30000,
     print: function() {}
+  },
+  chromeOptions: {
+    args: {
+      binary: process.env.CHROME_BIN
+    }
   },
   onPrepare() {
     require('ts-node').register({

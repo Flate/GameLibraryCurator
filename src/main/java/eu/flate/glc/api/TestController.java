@@ -1,4 +1,4 @@
-package eu.flate.glc.GameLibraryCurator.api;
+package eu.flate.glc.api;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
