@@ -10,13 +10,20 @@ before_install:
   - npm install -g @angular/cli
 
 script:
-  # Unit tests
-  - ./gradlew ciTest --scan --no-daemon -s
-  # End2End tests
+  # Build
+  - gradle assemble
   - cd src/main/webapp
+  # ng Unit tests
+  - npm ci
+  - ng build --prod
+  - npm test
+  # ng End2End tests
   - npm run webdriver-update
   - npm run webdriver-start
   - npm run ci-e2e
+  - cd ../../../
+  # Java tests
+  - ./gradlew test
 
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
