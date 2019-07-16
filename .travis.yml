@@ -20,7 +20,8 @@ script:
   # ng End2End tests
   - npm run webdriver-update
   - npm run webdriver-start
-  - npm run ci-e2e
+  # Disable E2E for now in CI
+  #- npm run ci-e2e
   - cd ../../../
   # Java tests
   - ./gradlew test
