@@ -119,7 +119,6 @@ task createPom {
 test {
 	task ciTest {
 		dependsOn "karmaTestAngular"
-		dependsOn "e2eTestAngular"
 	}
 
 	task ciBuildAngular(type: Exec) {
@@ -162,17 +161,4 @@ test {
 		}
 	}
 
-	task e2eTestAngular(type: Exec) {
-		dependsOn "ciBuildAngular"
-		workingDir "$webappDir"
-		inputs.dir "$webappSrc"
-		inputs.dir "$webappDir/e2e"
-		outputs.dir "$webappOut"
-		group = BasePlugin.BUILD_GROUP
-		if (System.getProperty("os.name").toUpperCase().contains("WINDOWS")) {
-			commandLine "ng.cmd", "e2e"
-		} else {
-			commandLine "ng", "e2e"
-		}
-	}
 }
