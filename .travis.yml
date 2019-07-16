@@ -11,7 +11,7 @@ before_install:
 
 script:
   # Build
-  - gradle assemble
+  - ./gradlew assemble
   - cd src/main/webapp
   # ng Unit tests
   - npm ci
