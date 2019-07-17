@@ -15,7 +15,14 @@ exports.config = {
     './src/**/*.e2e-spec.ts'
   ],
   capabilities: {
-    'browserName': 'chrome'
+    'browserName': 'chrome',
+    chromeOptions: {
+      args: {
+        binary: process.env.CHROME_BIN,
+        args: ["--headless",
+        "--no-sandbox"]
+      }
+    },
   },
   directConnect: true,
   baseUrl: 'http://localhost:4200/',
@@ -25,11 +32,7 @@ exports.config = {
     defaultTimeoutInterval: 30000,
     print: function() {}
   },
-  chromeOptions: {
-    args: {
-      binary: process.env.CHROME_BIN
-    }
-  },
+
   onPrepare() {
     require('ts-node').register({
       project: require('path').join(__dirname, './tsconfig.json')
