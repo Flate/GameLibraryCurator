@@ -23,12 +23,31 @@ build:
       - build
       - .gradle
 
+build-angular:
+  stage: build
+  script: cd src/main/webapp && npm ci && ng build --prod
+  cache:
+    key: "$CI_COMMIT_REF_NAME"
+    policy: push
+    paths:
+      - src/main/webapp/dist
+      - src/main/webapp/node_modules
+
 test:
   stage: test
-  script: gradle ciTest
+  script: gradle test
   cache:
     key: "$CI_COMMIT_REF_NAME"
     policy: pull
     paths:
       - build
       - .gradle
+
+#test-angular:
+#  stage: test
+#  script: cd src/main/webapp && ng test
+#     key: "$CI_COMMIT_REF_NAME"
+#     policy: pull
+#     paths:
+#       - src/main/webapp/dist
+#       - src/main/webapp/node_modules
