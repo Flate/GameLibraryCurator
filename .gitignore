@@ -312,3 +312,5 @@ gradle-app.setting
 *.css
 
 *.map
+
+conf/secrets\.properties
