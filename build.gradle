@@ -36,6 +36,7 @@ javaModule.hacks {
 }
 
 repositories {
+	maven { url 'https://repo.spring.io/milestone' }
 	mavenCentral()
 }
 
@@ -51,7 +52,7 @@ dependencies {
 
 	implementation 'org.hamcrest:hamcrest-core'
 	implementation 'org.reactivestreams:reactive-streams'
-	implementation 'io.projectreactor:reactor-netty'
+	implementation "io.projectreactor.netty:reactor-netty:0.9.0.M2"
 	implementation 'com.fasterxml.jackson.core:jackson-databind'
 	implementation 'com.fasterxml.jackson.core:jackson-annotations'
 	implementation 'org.springframework:spring-webflux'
