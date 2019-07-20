@@ -11,6 +11,7 @@ public class GameLibraryCuratorTests {
 
 	@Test
 	public void contextLoads() {
+		// Do nothing
 	}
 
 }
