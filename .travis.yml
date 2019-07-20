@@ -14,7 +14,7 @@ script:
   - ./gradlew assemble
   - cd src/main/webapp
   # ng Unit tests
-  - npm ci
+  - npm -f i
   - ng build --prod
   #- npm test
   # ng End2End tests
@@ -34,3 +34,4 @@ cache:
   directories:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
+    - $HOME/src/main/webapp/node_modules

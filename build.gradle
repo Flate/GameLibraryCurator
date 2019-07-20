@@ -96,9 +96,9 @@ task installAngular(type: Exec) {
 	outputs.dir "$webappModules"
 	group = BasePlugin.BUILD_GROUP
 	if (System.getProperty("os.name").toUpperCase().contains("WINDOWS")) {
-		commandLine "npm.cmd", "install"
+		commandLine "npm.cmd", "-f", "install"
 	} else {
-		commandLine "npm", "install"
+		commandLine "npm", "-f", "install"
 	}
 }
 
