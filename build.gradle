@@ -56,8 +56,11 @@ dependencies {
 	implementation 'com.fasterxml.jackson.core:jackson-databind'
 	implementation 'com.fasterxml.jackson.core:jackson-annotations'
 	implementation 'org.springframework:spring-webflux'
+	implementation 'org.springframework:spring-tx'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-devtools'
+	implementation 'org.postgresql:postgresql'
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.junit.jupiter:junit-jupiter-api'
@@ -110,13 +113,17 @@ task installAngular(type: Exec) {
 
 
 task createPom {
+	//noinspection GrUnresolvedAccess
 	pom {
 		//noinspection GroovyAssignabilityCheck
 		project {
+			//noinspection GrUnresolvedAccess
 			groupId rootProject.group.toString()
+			//noinspection GrUnresolvedAccess
 			artifactId rootProject.name
 			version rootProject.version.toString()
 
+			//noinspection GrUnresolvedAccess
 			inceptionYear '2019'
 		}
 	}.writeTo("pom.xml")
