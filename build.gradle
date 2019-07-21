@@ -1,14 +1,13 @@
 plugins {
 	id 'com.gradle.build-scan' version '2.3'
 	id 'org.springframework.boot' version '2.1.6.RELEASE'
+    id 'io.freefair.lombok' version '3.8.0'
 	id 'idea'
 	id 'java'
 	id 'maven'
-	id 'com.zyxist.chainsaw' version '0.3.1'
 }
 
 apply plugin: 'io.spring.dependency-management'
-
 
 group = 'eu.flate.glc'
 version = '0.0.1-SNAPSHOT'
@@ -27,13 +26,6 @@ def webappFiles = files(file("$webappDir/angular.json"),
 
 def webappTestFile = file("$webappDir/karma.conf.js")
 
-javaModule.name = 'eu.flate.GameLibraryCurator'
-javaModule.extraTestModules = ['spring.test', 'spring.boot.test']
-
-javaModule.hacks {
-	patches('hamcrest.library', 'hamcrest.core')
-	patches('android.json', 'jsonassert')
-}
 
 repositories {
 	maven { url 'https://repo.spring.io/milestone' }
@@ -45,12 +37,13 @@ buildScan {
 	termsOfServiceAgree = 'yes'
 }
 
+springBoot {
+	mainClassName = 'eu.flate.glc.GameLibraryCurator'
+}
 
 dependencies {
-	patch 'org.hamcrest:hamcrest-library'
-	patch 'com.vaadin.external.google:android-json:0.0.20131108.vaadin1'
-
 	implementation 'org.hamcrest:hamcrest-core'
+	implementation 'org.projectlombok:lombok:1.18.6'
 	implementation 'org.reactivestreams:reactive-streams'
 	implementation "io.projectreactor.netty:reactor-netty:0.9.0.M2"
 	implementation 'com.fasterxml.jackson.core:jackson-databind'
@@ -105,9 +98,9 @@ task installAngular(type: Exec) {
 	outputs.dir "$webappModules"
 	group = BasePlugin.BUILD_GROUP
 	if (System.getProperty("os.name").toUpperCase().contains("WINDOWS")) {
-		commandLine "npm.cmd", "-f", "install"
+		commandLine "npm.cmd", "install"
 	} else {
-		commandLine "npm", "-f", "install"
+		commandLine "npm", "install"
 	}
 }
 
