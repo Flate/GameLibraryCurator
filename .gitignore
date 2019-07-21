@@ -5,14 +5,14 @@
 ### Angular ###
 ## Angular ##
 # compiled output
-/dist
-/tmp
-/app/**/*.js
-/app/**/*.js.map
+/src/main/webapp/dist
+/src/main/webapp/tmp
+/src/main/webapp/app/**/*.js
+/src/main/webapp/app/**/*.js.map
 
 # dependencies
-/node_modules
-/bower_components
+/src/main/webapp/node_modules
+/src/main/webapp/bower_components
 
 # IDEs and editors
 /.idea
@@ -310,7 +310,5 @@ gradle-app.setting
 # End of https://www.gitignore.io/api/windows,linux,intellij+all,vscode,angular,node,java,maven,gradle
 
 *.css
-
 *.map
-
-conf/secrets\.properties
+config/secrets\.properties
