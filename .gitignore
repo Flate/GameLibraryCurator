@@ -312,3 +312,4 @@ gradle-app.setting
 *.css
 *.map
 config/secrets\.properties
+lombok.config
