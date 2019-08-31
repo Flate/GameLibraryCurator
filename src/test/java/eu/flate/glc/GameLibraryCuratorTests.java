@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-@Ignore
+@Ignore("This class only exists to demonstrate how to write the test class (for now).")
 public class GameLibraryCuratorTests {
 
 	@Test
