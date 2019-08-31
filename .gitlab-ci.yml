@@ -12,36 +12,31 @@ variables:
 
 before_script:
   - export GRADLE_USER_HOME=`pwd`/.gradle
+  - curl -o- -L https://yarnpkg.com/install.sh | bash
+  - export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
+  - yarn install
 
 build:
   stage: build
   script: gradle assemble
   cache:
     key: "$CI_COMMIT_REF_NAME"
-    policy: push
     paths:
       - build
       - .gradle
-
-build-angular:
-  stage: build
-  script: cd src/main/webapp && npm ci && ng build --prod
-  cache:
-    key: "$CI_COMMIT_REF_NAME"
-    policy: push
-    paths:
-      - src/main/webapp/dist
-      - src/main/webapp/node_modules
+      - node_modules
+      - .yarn
 
 test:
   stage: test
   script: gradle test
   cache:
     key: "$CI_COMMIT_REF_NAME"
-    policy: pull
     paths:
       - build
       - .gradle
+      - node_modules
+      - .yarn
 
 #test-angular:
 #  stage: test
