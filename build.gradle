@@ -4,11 +4,9 @@ plugins {
 	id 'idea'
 	id 'java'
 	id 'maven'
-	id 'com.zyxist.chainsaw' version '0.3.1'
 }
 
 apply plugin: 'io.spring.dependency-management'
-
 
 group = 'eu.flate.glc'
 version = '0.0.1-SNAPSHOT'
@@ -27,14 +25,6 @@ def webappFiles = files(file("$webappDir/angular.json"),
 
 def webappTestFile = file("$webappDir/karma.conf.js")
 
-javaModule.name = 'eu.flate.GameLibraryCurator'
-javaModule.extraTestModules = ['spring.test', 'spring.boot.test']
-
-javaModule.hacks {
-	patches('hamcrest.library', 'hamcrest.core')
-	patches('android.json', 'jsonassert')
-}
-
 repositories {
 	mavenCentral()
 }
@@ -46,9 +36,6 @@ buildScan {
 
 
 dependencies {
-	patch 'org.hamcrest:hamcrest-library'
-	patch 'com.vaadin.external.google:android-json:0.0.20131108.vaadin1'
-
 	implementation 'org.hamcrest:hamcrest-core'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-devtools'
