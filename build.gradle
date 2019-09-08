@@ -44,6 +44,7 @@ configurations {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.hamcrest:hamcrest-core'
     implementation 'org.springframework.boot:spring-boot-devtools'
     implementation 'com.lukaspradel:steam-web-api:1.2'
@@ -53,6 +54,7 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'org.junit.jupiter:junit-jupiter-api'
     testImplementation 'org.junit.jupiter:junit-jupiter-engine'
 }
@@ -82,7 +84,7 @@ task buildAngular(type: Exec) {
     // Add task to the standard build group
     group = BasePlugin.BUILD_GROUP
 
-    commandLine "ng", "build"
+    commandLine "$webappDir/node_modules/@angular/cli/bin/ng", "build"
 }
 
 task installAngular(type: Exec) {
@@ -120,7 +122,7 @@ test {
         outputs.dir "$webappOut"
         group = BasePlugin.BUILD_GROUP
 
-        commandLine "ng", "build", "--prod"
+        commandLine "$webappDir/node_modules/@angular/cli/bin/ng", "build", "--prod"
     }
 
     task karmaTestAngular(type: Exec) {
@@ -131,7 +133,7 @@ test {
         outputs.dir "$webappOut"
         group = BasePlugin.BUILD_GROUP
 
-        commandLine "ng", "test", "--progress=false", "--watch=false"
+        commandLine "$webappDir/node_modules/@angular/cli/bin/ng", "test", "--progress=false", "--watch=false"
     }
 
 }
