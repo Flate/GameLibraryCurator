@@ -1,9 +1,10 @@
 plugins {
-	id 'com.gradle.build-scan' version '2.4.1'
-	id 'org.springframework.boot' version '2.1.8.RELEASE'
-	id 'idea'
-	id 'java'
-	id 'maven'
+    id 'com.gradle.build-scan' version '2.4.1'
+    id 'org.springframework.boot' version '2.1.8.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+    id 'idea'
+    id 'java'
+    id 'maven'
 }
 
 apply plugin: 'io.spring.dependency-management'
@@ -17,109 +18,122 @@ def webappOut = "$webappDir/dist"
 def webappSrc = "$webappDir/src"
 def webappModules = "$webappDir/node_modules"
 def webappFiles = files(file("$webappDir/angular.json"),
-		file("$webappDir/package.json"),
-		file("$webappDir/package-lock.json"),
-		file("$webappDir/tsconfig.app.json"),
-		file("$webappDir/tsconfig.json"),
-		file("$webappDir/tsconfig.spec.json"));
+        file("$webappDir/package.json"),
+        file("$webappDir/yarn.lock"),
+        file("$webappDir/tsconfig.app.json"),
+        file("$webappDir/tsconfig.json"),
+        file("$webappDir/tsconfig.spec.json"));
 
 def webappTestFile = file("$webappDir/karma.conf.js")
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 buildScan {
-	termsOfServiceUrl = 'https://gradle.com/terms-of-service'
-	termsOfServiceAgree = 'yes'
+    termsOfServiceUrl = 'https://gradle.com/terms-of-service'
+    termsOfServiceAgree = 'yes'
 }
 
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
 
 dependencies {
-	implementation 'org.hamcrest:hamcrest-core'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-devtools'
-	implementation 'com.lukaspradel:steam-web-api:1.2'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.junit.jupiter:junit-jupiter-api'
-	testImplementation 'org.junit.jupiter:junit-jupiter-engine'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.hamcrest:hamcrest-core'
+    implementation 'org.springframework.boot:spring-boot-devtools'
+    implementation 'com.lukaspradel:steam-web-api:1.2'
+
+    runtimeOnly 'org.postgresql:postgresql'
+
+    annotationProcessor 'org.projectlombok:lombok'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api'
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine'
 }
 
 
 sourceSets {
-	main {
-		resources {
-			srcDirs = ["$webappOut", "$projectDir/src/main/resources"]
-		}
-	}
+    main {
+        resources {
+            srcDirs = ["$webappOut", "$projectDir/src/main/resources"]
+        }
+    }
 }
 
 processResources {
-	dependsOn "buildAngular"
-	dependsOn "createPom"
+    dependsOn "buildAngular"
+    dependsOn "createPom"
 }
 
 
 task buildAngular(type: Exec) {
-	// installAngular should be run prior to this task
-	dependsOn "installAngular"
-	workingDir "$webappDir"
-	inputs.dir "$webappSrc"
-	inputs.files "$webappFiles"
-	outputs.dir "$webappOut"
-	// Add task to the standard build group
-	group = BasePlugin.BUILD_GROUP
+    // installAngular should be run prior to this task
+    dependsOn "installAngular"
+    workingDir "$webappDir"
+    inputs.dir "$webappSrc"
+    inputs.files "$webappFiles"
+    outputs.dir "$webappOut"
+    // Add task to the standard build group
+    group = BasePlugin.BUILD_GROUP
 
-	commandLine "ng", "build"
+    commandLine "$webappDir/node_modules/@angular/cli/bin/ng", "build"
 }
 
 task installAngular(type: Exec) {
-	workingDir "$webappDir"
-	inputs.files "$webappFiles"
-	outputs.dir "$webappModules"
-	group = BasePlugin.BUILD_GROUP
+    workingDir "$webappDir"
+    inputs.files "$webappFiles"
+    outputs.dir "$webappModules"
+    group = BasePlugin.BUILD_GROUP
 
-	commandLine "yarn", "install"
+    commandLine "yarn", "install"
 }
 
 
 task createPom {
-	pom {
-		//noinspection GroovyAssignabilityCheck
-		project {
-			groupId rootProject.group.toString()
-			artifactId rootProject.name
-			version rootProject.version.toString()
+    pom {
+        //noinspection GroovyAssignabilityCheck
+        project {
+            groupId rootProject.group.toString()
+            artifactId rootProject.name
+            version rootProject.version.toString()
 
-			inceptionYear '2019'
-		}
-	}.writeTo("pom.xml")
+            inceptionYear '2019'
+        }
+    }.writeTo("pom.xml")
 }
 
 test {
-	task ciTest {
-		dependsOn "karmaTestAngular"
-	}
+    task ciTest {
+        dependsOn "karmaTestAngular"
+    }
 
-	task ciBuildAngular(type: Exec) {
-		workingDir "$webappDir"
-		inputs.dir "$webappSrc"
-		inputs.files "$webappFiles"
-		outputs.dir "$webappOut"
-		group = BasePlugin.BUILD_GROUP
+    task ciBuildAngular(type: Exec) {
+        workingDir "$webappDir"
+        inputs.dir "$webappSrc"
+        inputs.files "$webappFiles"
+        outputs.dir "$webappOut"
+        group = BasePlugin.BUILD_GROUP
 
-		commandLine "ng", "build", "--prod"
-	}
+        commandLine "$webappDir/node_modules/@angular/cli/bin/ng", "build", "--prod"
+    }
 
-	task karmaTestAngular(type: Exec) {
-		dependsOn "ciBuildAngular"
-		workingDir "$webappDir"
-		inputs.dir "$webappSrc"
-		inputs.file "$webappTestFile"
-		outputs.dir "$webappOut"
-		group = BasePlugin.BUILD_GROUP
+    task karmaTestAngular(type: Exec) {
+        dependsOn "ciBuildAngular"
+        workingDir "$webappDir"
+        inputs.dir "$webappSrc"
+        inputs.file "$webappTestFile"
+        outputs.dir "$webappOut"
+        group = BasePlugin.BUILD_GROUP
 
-		commandLine "ng", "test", "--progress=false", "--watch=false"
-	}
+        commandLine "$webappDir/node_modules/@angular/cli/bin/ng", "test", "--progress=false", "--watch=false"
+    }
 
 }

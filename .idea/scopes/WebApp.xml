@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="WebApp" pattern="file[GameLibraryCurator.main]:webapp//*" />
+</component>
