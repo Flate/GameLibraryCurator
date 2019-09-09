@@ -7,6 +7,8 @@ import { Component, OnInit } from '@angular/core';
 })
 export class TopBarComponent implements OnInit {
 
+  private title: string = "Game Library Curator";
+
   constructor() { }
 
   ngOnInit() { }

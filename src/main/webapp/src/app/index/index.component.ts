@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { HttpClient } from "@angular/common/http";
 
 @Component({
   selector: 'app-index',
@@ -6,9 +7,15 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: [ './index.component.scss' ]
 })
 export class IndexComponent implements OnInit {
+  result = '';
 
-  constructor() { }
+  constructor(private client: HttpClient) { }
 
   ngOnInit() { }
 
+
+  sayHello(): void {
+    this.result = 'loading...';
+    this.client.get('/api/hello-world').subscribe(response => this.result = response as string);
+  }
 }
