@@ -73,7 +73,6 @@ processResources {
     dependsOn "createPom"
 }
 
-
 task buildAngular(type: Exec) {
     // installAngular should be run prior to this task
     dependsOn "installAngular"
@@ -84,7 +83,8 @@ task buildAngular(type: Exec) {
     // Add task to the standard build group
     group = BasePlugin.BUILD_GROUP
 
-    commandLine "$webappDir/node_modules/@angular/cli/bin/ng", "build"
+    // We use the one from the path
+    commandLine "$webappModules/@angular/cli/bin/ng", "build"
 }
 
 task installAngular(type: Exec) {
@@ -110,30 +110,3 @@ task createPom {
     }.writeTo("pom.xml")
 }
 
-test {
-    task ciTest {
-        dependsOn "karmaTestAngular"
-    }
-
-    task ciBuildAngular(type: Exec) {
-        workingDir "$webappDir"
-        inputs.dir "$webappSrc"
-        inputs.files "$webappFiles"
-        outputs.dir "$webappOut"
-        group = BasePlugin.BUILD_GROUP
-
-        commandLine "$webappDir/node_modules/@angular/cli/bin/ng", "build", "--prod"
-    }
-
-    task karmaTestAngular(type: Exec) {
-        dependsOn "ciBuildAngular"
-        workingDir "$webappDir"
-        inputs.dir "$webappSrc"
-        inputs.file "$webappTestFile"
-        outputs.dir "$webappOut"
-        group = BasePlugin.BUILD_GROUP
-
-        commandLine "$webappDir/node_modules/@angular/cli/bin/ng", "test", "--progress=false", "--watch=false"
-    }
-
-}
