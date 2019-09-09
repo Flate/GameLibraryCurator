@@ -3,7 +3,6 @@ package eu.flate.glc.api.controller;
 import eu.flate.glc.api.exceptions.ResourceNotFoundException;
 import eu.flate.glc.api.model.Game;
 import eu.flate.glc.api.repository.GameRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -14,8 +13,9 @@ import javax.validation.Valid;
 @RestController
 public class GameController {
 
-    @Autowired
-    private GameRepository gameRepository;
+    private final GameRepository gameRepository;
+
+    public GameController(final GameRepository gameRepository) {this.gameRepository = gameRepository;}
 
     @PostMapping("/games")
     public Page<Game> getGames(Pageable pageable) {
