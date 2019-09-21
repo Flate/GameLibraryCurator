@@ -14,7 +14,7 @@ before_script:
   - export GRADLE_USER_HOME=`pwd`/.gradle
   - curl -o- -L https://yarnpkg.com/install.sh | bash
   - export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
-  - yarn install
+  - yarn --version
 
 build:
   stage: build
