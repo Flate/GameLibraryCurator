@@ -18,18 +18,7 @@ before_script:
 
 build:
   stage: build
-  script: gradle assemble
-  cache:
-    key: "$CI_COMMIT_REF_NAME"
-    paths:
-      - build
-      - .gradle
-      - node_modules
-      - .yarn
-
-test:
-  stage: test
-  script: gradle test
+  script: ./gradlew build
   cache:
     key: "$CI_COMMIT_REF_NAME"
     paths:

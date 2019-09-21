@@ -337,6 +337,8 @@ gradle-app.setting
 
 # End of https://www.gitignore.io/api/node,java,linux,macos,maven,gradle,windows,angular,intellij,visualstudiocode
 
+# Ignore yarn file in root
+/yarn.lock
 *.css
 *.map
 

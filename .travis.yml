@@ -12,8 +12,6 @@ before_install:
   - export PATH=$HOME/.yarn/bin:$PATH
 
 script:
-  # Build
-  - ./gradlew assemble
   - cd src/main/webapp
   # ng Unit tests
   - yarn install
@@ -24,8 +22,8 @@ script:
   # Disable E2E for now in CI
   #- npm run ci-e2e
   - cd ../../../
-  # Java tests
-  - ./gradlew test
+  # Build
+  - ./gradlew build
 
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
