@@ -18,6 +18,9 @@ before_script:
 
 build:
   stage: build
+  artifacts:
+    paths:
+      - build/libs/*
   script: ./gradlew build
   cache:
     key: "$CI_COMMIT_REF_NAME"
