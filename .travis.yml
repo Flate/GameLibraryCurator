@@ -12,16 +12,16 @@ before_install:
   - export PATH=$HOME/.yarn/bin:$PATH
 
 script:
-  - cd src/main/webapp
+  #- cd src/main/webapp
   # ng Unit tests
-  - yarn install
-  - ng build --prod
+  #- yarn install
+  #- ng build --prod
   # ng End2End tests
   #- npm run webdriver-update
   #- npm run webdriver-start
   # Disable E2E for now in CI
   #- npm run ci-e2e
-  - cd ../../../
+  #- cd ../../../
   # Build
   - ./gradlew build
 

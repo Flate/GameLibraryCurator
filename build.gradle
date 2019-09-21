@@ -69,31 +69,39 @@ sourceSets {
 }
 
 processResources {
-    dependsOn "buildAngular"
+    dependsOn "nodeModules"
     dependsOn "createPom"
 }
 
-task buildAngular(type: Exec) {
-    // installAngular should be run prior to this task
-    dependsOn "installAngular"
-    workingDir "$webappDir"
-    inputs.dir "$webappSrc"
-    inputs.files "$webappFiles"
-    outputs.dir "$webappOut"
-    // Add task to the standard build group
-    group = BasePlugin.BUILD_GROUP
+build {
+    dependsOn "angular"
 
-    // We use the one from the path
-    commandLine "$webappModules/@angular/cli/bin/ng", "build"
-}
+    task angular(type: Exec) {
+        // installAngular should be run prior to this task
+        dependsOn "nodeModules"
+        workingDir "$webappDir"
+        inputs.dir "$webappSrc"
+        inputs.files "$webappFiles"
+        outputs.dir "$webappOut"
+        // Add task to the standard build group
+        group = BasePlugin.BUILD_GROUP
 
-task installAngular(type: Exec) {
-    workingDir "$webappDir"
-    inputs.files "$webappFiles"
-    outputs.dir "$webappModules"
-    group = BasePlugin.BUILD_GROUP
+        // We use the one from the path
+        commandLine "$webappModules/@angular/cli/bin/ng", "build"
+    }
 
-    commandLine "yarn", "install"
+    task cleanAngular(type: Delete) {
+        delete "src/main/webapp/dist/static"
+    }
+
+    task nodeModules(type: Exec) {
+        workingDir "$webappDir"
+        inputs.files "$webappFiles"
+        outputs.dir "$webappModules"
+        group = BasePlugin.BUILD_GROUP
+
+        commandLine "yarn", "install"
+    }
 }
 
 
