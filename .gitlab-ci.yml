@@ -27,8 +27,7 @@ build:
     paths:
       - build
       - .gradle
-      - node_modules
-      - .yarn
+      - src/main/webapp/node_modules
 
 #test-angular:
 #  stage: test
