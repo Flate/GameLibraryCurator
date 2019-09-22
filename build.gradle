@@ -79,7 +79,7 @@ dependencies {
 sourceSets {
     main {
         resources {
-            srcDirs = ["$webappOut", "$webappJsp", "$projectDir/src/main/resources"]
+            srcDirs = ["$webappOut", "$projectDir/src/main/resources"]
         }
     }
 }
