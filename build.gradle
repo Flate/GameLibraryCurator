@@ -11,10 +11,10 @@ apply plugin: 'io.spring.dependency-management'
 
 group = 'eu.flate.glc'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '11'
+sourceCompatibility = '12'
 
 def webappDir = "$projectDir/src/main/webapp"
-def webappOut = "$webappDir/dist"
+def webappOut = "$webappDir/resources"
 def webappSrc = "$webappDir/src"
 def webappModules = "$webappDir/node_modules"
 def webappFiles = files(file("$webappDir/angular.json"),
@@ -26,6 +26,17 @@ def webappFiles = files(file("$webappDir/angular.json"),
 
 def webappTestFile = file("$webappDir/karma.conf.js")
 
+configurations {
+    developmentOnly
+    runtimeClasspath {
+        extendsFrom developmentOnly
+    }
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+
 repositories {
     mavenCentral()
 }
@@ -35,22 +46,27 @@ buildScan {
     termsOfServiceAgree = 'yes'
 }
 
-configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
-}
-
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-rest'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.hamcrest:hamcrest-core'
-    implementation 'org.springframework.boot:spring-boot-devtools'
     implementation 'com.lukaspradel:steam-web-api:1.2'
+    implementation 'javax.servlet:jstl'
+
+    compileOnly 'org.projectlombok:lombok'
+    compileOnly 'org.springframework.boot:spring-boot-starter-tomcat'
+    compileOnly 'org.apache.tomcat.embed:tomcat-embed-jasper'
+
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
     runtimeOnly 'org.postgresql:postgresql'
 
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     annotationProcessor 'org.projectlombok:lombok'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -63,14 +79,18 @@ dependencies {
 sourceSets {
     main {
         resources {
-            srcDirs = ["$webappOut", "$projectDir/src/main/resources"]
+            srcDirs = ["$webappOut", "$webappJsp", "$projectDir/src/main/resources"]
         }
     }
 }
 
 processResources {
-    dependsOn "nodeModules"
+    dependsOn "angular"
     dependsOn "createPom"
+}
+
+clean {
+    dependsOn "cleanAngular"
 }
 
 build {
@@ -86,12 +106,14 @@ build {
         // Add task to the standard build group
         group = BasePlugin.BUILD_GROUP
 
-        // We use the one from the path
+
+        // We use the one from the modules folder
         commandLine "$webappModules/@angular/cli/bin/ng", "build"
     }
 
     task cleanAngular(type: Delete) {
-        delete "src/main/webapp/dist/static"
+        delete "src/main/webapp/dist"
+        group = BasePlugin.BUILD_GROUP
     }
 
     task nodeModules(type: Exec) {
