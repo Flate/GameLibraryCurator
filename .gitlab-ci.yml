@@ -12,16 +12,16 @@ variables:
 
 before_script:
   - export GRADLE_USER_HOME=`pwd`/.gradle
-  - curl -o- -L https://yarnpkg.com/install.sh | bash
-  - export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
-  - yarn --version
 
 build:
   stage: build
   artifacts:
     paths:
       - build/libs/*
-  script: ./gradlew build
+  script: 
+    #- yes | sdk use java 12.0.2-librca
+    - java -version
+    - ./gradlew build
   cache:
     key: "$CI_COMMIT_REF_NAME"
     paths:
