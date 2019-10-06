@@ -13,18 +13,6 @@ group = 'eu.flate.glc'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '12'
 
-def webappDir = "$projectDir/src/main/webapp"
-def webappOut = "$webappDir/resources"
-def webappSrc = "$webappDir/src"
-def webappModules = "$webappDir/node_modules"
-def webappFiles = files(file("$webappDir/angular.json"),
-        file("$webappDir/package.json"),
-        file("$webappDir/yarn.lock"),
-        file("$webappDir/tsconfig.app.json"),
-        file("$webappDir/tsconfig.json"),
-        file("$webappDir/tsconfig.spec.json"));
-
-def webappTestFile = file("$webappDir/karma.conf.js")
 
 configurations {
     developmentOnly
@@ -79,53 +67,14 @@ dependencies {
 sourceSets {
     main {
         resources {
-            srcDirs = ["$webappOut", "$projectDir/src/main/resources"]
+            srcDirs = ["$projectDir/src/main/resources"]
         }
     }
 }
 
 processResources {
-    dependsOn "angular"
     dependsOn "createPom"
 }
-
-clean {
-    dependsOn "cleanAngular"
-}
-
-build {
-    dependsOn "angular"
-
-    task angular(type: Exec) {
-        // installAngular should be run prior to this task
-        dependsOn "nodeModules"
-        workingDir "$webappDir"
-        inputs.dir "$webappSrc"
-        inputs.files "$webappFiles"
-        outputs.dir "$webappOut"
-        // Add task to the standard build group
-        group = BasePlugin.BUILD_GROUP
-
-
-        // We use the one from the modules folder
-        commandLine "$webappModules/@angular/cli/bin/ng", "build"
-    }
-
-    task cleanAngular(type: Delete) {
-        delete "src/main/webapp/dist"
-        group = BasePlugin.BUILD_GROUP
-    }
-
-    task nodeModules(type: Exec) {
-        workingDir "$webappDir"
-        inputs.files "$webappFiles"
-        outputs.dir "$webappModules"
-        group = BasePlugin.BUILD_GROUP
-
-        commandLine "yarn", "install"
-    }
-}
-
 
 task createPom {
     pom {

@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="GameLibraryCurator" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
     <log_file alias="main" path="log/app.log" />
-    <module name="GameLibraryCurator.main" />
+    <module name="eu.flate.glc.GameLibraryCurator.main" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="eu.flate.glc.GameLibraryCurator" />
     <option name="DEBUG_MODE" value="true" />
     <option name="ACTIVE_PROFILES" value="prod" />

@@ -5,10 +5,10 @@
       <profile default="true" name="Default" enabled="true" />
       <profile name="Gradle Imported" enabled="true">
         <processorPath useClasspath="false">
-          <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework.boot/spring-boot-configuration-processor/2.1.8.RELEASE/8e5e7de241b549c44b21231a6c4d8dc2312f77e/spring-boot-configuration-processor-2.1.8.RELEASE.jar" />
-          <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.8/448003bc1b234aac04b58e27d7755c12c3ec4236/lombok-1.18.8.jar" />
+          <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework.boot/spring-boot-configuration-processor/2.1.9.RELEASE/c5c010daeb0f909acdc37833a66abb936a67f272/spring-boot-configuration-processor-2.1.9.RELEASE.jar" />
+          <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.10/625fc0055674dff70dbc76efa36d0f2c89b04a24/lombok-1.18.10.jar" />
         </processorPath>
-        <module name="GameLibraryCurator.main" />
+        <module name="eu.flate.glc.GameLibraryCurator.main" />
       </profile>
     </annotationProcessing>
   </component>
