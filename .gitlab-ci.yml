@@ -1,7 +1,7 @@
 # This is the Gradle build system for JVM applications
 # https://gradle.org/
 # https://github.com/gradle/gradle
-image: flate/gradle-plus-npm:latest
+image: gradle:5.6.2-jdk12
 
 # Disable the Gradle daemon for Continuous Integration servers as correctness
 # is usually a priority over speed in CI environments. Using a fresh
@@ -12,31 +12,22 @@ variables:
 
 before_script:
   - export GRADLE_USER_HOME=`pwd`/.gradle
-  - curl -o- -L https://yarnpkg.com/install.sh | bash
-  - export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
-  - yarn install
 
 build:
   stage: build
-  script: gradle assemble
+  artifacts:
+    paths:
+      - build/libs/*
+  script: 
+    #- yes | sdk use java 12.0.2-librca
+    - java -version
+    - ./gradlew build
   cache:
     key: "$CI_COMMIT_REF_NAME"
     paths:
       - build
       - .gradle
-      - node_modules
-      - .yarn
-
-test:
-  stage: test
-  script: gradle test
-  cache:
-    key: "$CI_COMMIT_REF_NAME"
-    paths:
-      - build
-      - .gradle
-      - node_modules
-      - .yarn
+      - src/main/webapp/node_modules
 
 #test-angular:
 #  stage: test

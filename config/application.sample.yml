@@ -1,0 +1,6 @@
+## Spring DATASOURCE
+spring:
+  datasource:
+    password: ''
+    url: jdbc:postgresql://localhost:5432/glc
+    username: glc

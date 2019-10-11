@@ -11,20 +11,19 @@ apply plugin: 'io.spring.dependency-management'
 
 group = 'eu.flate.glc'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '11'
+sourceCompatibility = '12'
 
-def webappDir = "$projectDir/src/main/webapp"
-def webappOut = "$webappDir/dist"
-def webappSrc = "$webappDir/src"
-def webappModules = "$webappDir/node_modules"
-def webappFiles = files(file("$webappDir/angular.json"),
-        file("$webappDir/package.json"),
-        file("$webappDir/yarn.lock"),
-        file("$webappDir/tsconfig.app.json"),
-        file("$webappDir/tsconfig.json"),
-        file("$webappDir/tsconfig.spec.json"));
 
-def webappTestFile = file("$webappDir/karma.conf.js")
+configurations {
+    developmentOnly
+    runtimeClasspath {
+        extendsFrom developmentOnly
+    }
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
 
 repositories {
     mavenCentral()
@@ -35,67 +34,52 @@ buildScan {
     termsOfServiceAgree = 'yes'
 }
 
-configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
-}
-
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-data-rest'
+    //implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    //implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.hamcrest:hamcrest-core'
-    implementation 'org.springframework.boot:spring-boot-devtools'
     implementation 'com.lukaspradel:steam-web-api:1.2'
+    implementation 'javax.servlet:jstl'
+    implementation 'javax.servlet:javax.servlet-api'
+    implementation 'org.apache.commons:commons-lang3'
+    implementation 'com.google.guava:guava:28.1-jre'
+    implementation 'io.jsonwebtoken:jjwt:0.9.0'
+
+
+    compileOnly 'org.projectlombok:lombok'
+    compileOnly 'org.springframework.boot:spring-boot-starter-tomcat'
+    compileOnly 'org.apache.tomcat.embed:tomcat-embed-jasper'
+
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
     runtimeOnly 'org.postgresql:postgresql'
 
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     annotationProcessor 'org.projectlombok:lombok'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'org.junit.jupiter:junit-jupiter-api'
     testImplementation 'org.junit.jupiter:junit-jupiter-engine'
+    testImplementation 'org.mockito:mockito-core'
 }
 
 
 sourceSets {
     main {
         resources {
-            srcDirs = ["$webappOut", "$projectDir/src/main/resources"]
+            srcDirs = ["$projectDir/src/main/resources"]
         }
     }
 }
 
 processResources {
-    dependsOn "buildAngular"
     dependsOn "createPom"
 }
-
-
-task buildAngular(type: Exec) {
-    // installAngular should be run prior to this task
-    dependsOn "installAngular"
-    workingDir "$webappDir"
-    inputs.dir "$webappSrc"
-    inputs.files "$webappFiles"
-    outputs.dir "$webappOut"
-    // Add task to the standard build group
-    group = BasePlugin.BUILD_GROUP
-
-    commandLine "$webappDir/node_modules/@angular/cli/bin/ng", "build"
-}
-
-task installAngular(type: Exec) {
-    workingDir "$webappDir"
-    inputs.files "$webappFiles"
-    outputs.dir "$webappModules"
-    group = BasePlugin.BUILD_GROUP
-
-    commandLine "yarn", "install"
-}
-
 
 task createPom {
     pom {
@@ -110,30 +94,3 @@ task createPom {
     }.writeTo("pom.xml")
 }
 
-test {
-    task ciTest {
-        dependsOn "karmaTestAngular"
-    }
-
-    task ciBuildAngular(type: Exec) {
-        workingDir "$webappDir"
-        inputs.dir "$webappSrc"
-        inputs.files "$webappFiles"
-        outputs.dir "$webappOut"
-        group = BasePlugin.BUILD_GROUP
-
-        commandLine "$webappDir/node_modules/@angular/cli/bin/ng", "build", "--prod"
-    }
-
-    task karmaTestAngular(type: Exec) {
-        dependsOn "ciBuildAngular"
-        workingDir "$webappDir"
-        inputs.dir "$webappSrc"
-        inputs.file "$webappTestFile"
-        outputs.dir "$webappOut"
-        group = BasePlugin.BUILD_GROUP
-
-        commandLine "$webappDir/node_modules/@angular/cli/bin/ng", "test", "--progress=false", "--watch=false"
-    }
-
-}

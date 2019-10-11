@@ -18,7 +18,8 @@ import java.time.Instant;
     allowGetters = true
 )
 @Data
-public abstract class Game implements Serializable {
+public abstract class Game
+    implements Serializable {
 
     @Id
     @Column(name = "id", nullable = false, updatable = false)
@@ -26,7 +27,8 @@ public abstract class Game implements Serializable {
     @SequenceGenerator(
         name = "game_generator",
         sequenceName = "game_sequence",
-        initialValue = 1000
+        initialValue = 1000,
+        allocationSize = 1
     )
     private long id;
 

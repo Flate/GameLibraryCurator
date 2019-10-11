@@ -1,0 +1,28 @@
+logging:
+  level:
+    root: info
+    sql:
+    web: debug
+
+server:
+  port: 9350
+
+spring:
+  devtools:
+    livereload:
+      enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+  messages:
+    basename: validation
+  mvc:
+    view:
+      prefix: /templates/
+      suffix: .html
+  profiles:
+    active: prod
