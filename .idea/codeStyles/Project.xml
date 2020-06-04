@@ -423,9 +423,6 @@
         </rules>
       </arrangement>
     </codeStyleSettings>
-    <codeStyleSettings language="JSP">
-      <option name="WRAP_ON_TYPING" value="1" />
-    </codeStyleSettings>
     <codeStyleSettings language="TypeScript">
       <option name="RIGHT_MARGIN" value="140" />
       <option name="KEEP_SIMPLE_BLOCKS_IN_ONE_LINE" value="true" />

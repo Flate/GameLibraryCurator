@@ -3,4 +3,4 @@ pluginManagement {
 		gradlePluginPortal()
 	}
 }
-rootProject.name = 'GameLibraryCurator'
+rootProject.name = "GameLibraryCurator"
