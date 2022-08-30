@@ -47,7 +47,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.hamcrest:hamcrest-core'
     implementation 'org.springframework.boot:spring-boot-devtools'
-    implementation 'com.lukaspradel:steam-web-api:1.2'
+    implementation 'com.lukaspradel:steam-web-api:1.4'
 
     runtimeOnly 'org.postgresql:postgresql'
 
